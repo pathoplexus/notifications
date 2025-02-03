@@ -47,7 +47,7 @@ for organism in organisms:
         [seq for seq in new_sequences if seq["groupId"] != 1 and seq["version"] == 1]
     )
     direct_submission_alert = (
-        f"⚠️ Alert: {direct_submission_count} new direct Pathoplexus submissions! 🎉"
+        f"⚠️ SubmissionAlert: {direct_submission_count} new direct Pathoplexus submissions! 🎉"
         if direct_submission_count > 0
         else ""
     )
