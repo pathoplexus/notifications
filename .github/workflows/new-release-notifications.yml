@@ -1,0 +1,34 @@
+name: New Sequences Notification
+on:
+  schedule:
+    - cron: '13 * * * *'
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./new_releases
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up micromamba environment
+        uses: mamba-org/setup-micromamba@v2
+        with:
+          environment-file: new_releases/environment.yml
+          cache-environment: true
+      - name: Run notification script
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.RELEASE_SLACK_WEBHOOK_URL }}
+        run: python new_releases.py
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "gh-notifications-bot@pathoplexus.org"
+          git config --local user.name "Pathoplexus Notifications Bot"
+          git commit -am "Update already notified releases"
+          git push
