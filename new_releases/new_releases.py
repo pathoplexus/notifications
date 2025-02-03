@@ -52,7 +52,7 @@ for organism in organisms:
         else ""
     )
     header_base = f"{len(new_sequences)} new releases for {organism}"
-    thread_header = header_base + direct_submission_alert
+    thread_header = header_base + "\n" + direct_submission_alert
 
     # include url with filter
     new_accession_versions = ",".join(seq["accessionVersion"] for seq in new_sequences)
