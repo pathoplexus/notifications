@@ -20,6 +20,7 @@ params = {
             "groupName",
             "groupId",
             "sampleCollectionDate",
+            "releasedAtTimestamp",
         ]
     ),
 }
@@ -54,13 +55,17 @@ for organism in organisms:
     header_base = f"{len(new_sequences)} new releases for {organism}"
     thread_header = header_base + "\n" + direct_submission_alert
 
-    # include url with filter
-    new_accession_versions = ",".join(seq["accessionVersion"] for seq in new_sequences)
+    # Minimum and maximum releasedAtTimestamps of new sequences
+    min_time = min(seq["releasedAtTimestamp"] for seq in new_sequences)
+    max_time = max(seq["releasedAtTimestamp"] for seq in new_sequences)
     filter_url = (
-        f"https://pathoplexus.org/{organism}/search?accession={new_accession_versions}"
+        f"https://pathoplexus.org/{organism}/search?visibility_releasedAtTimestamp=true" +
+        f"&releasedAtTimestampFrom={min_time - 1}&releasedAtTimestampTo={max_time + 1}"
     )
-    message = f"New sequences for {organism}:\n" + "\n\n".join(
-        json.dumps(seq, indent=2) for seq in new_sequences
+
+    message = (
+        "Details of up to 10 new sequences (Slack can't handle more):\n"
+        + "\n\n".join(json.dumps(seq, indent=2) for seq in new_sequences[:10])
     )
 
     print(f"Sending notification for {organism}")
