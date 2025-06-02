@@ -30,6 +30,7 @@ jobs:
         run: |
           git config --local user.email "gh-notifications-bot@pathoplexus.org"
           git config --local user.name "Pathoplexus Notifications Bot"
+          git add already_notified/*
           if ! git diff-index --quiet HEAD; then
             git commit -am "Update already notified releases"
             git push
