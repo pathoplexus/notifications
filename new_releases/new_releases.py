@@ -43,6 +43,10 @@ for organism in organisms:
         print(f"No new sequences for {organism}")
         continue
 
+    # Distinguish between initial releases (.1) and revisions
+    initial_releases = [seq for seq in new_sequences if seq["accessionVersion"].endswith(".1")]
+    revisions = [seq for seq in new_sequences if not seq["accessionVersion"].endswith(".1")]
+
     # Check if there are non-groupId=1 sequences and add alert to header
     direct_submission_count = len(
         [seq for seq in new_sequences if seq["groupId"] != 1 and seq["version"] == 1]
@@ -52,8 +56,15 @@ for organism in organisms:
         if direct_submission_count > 0
         else ""
     )
-    header_base = f"{len(new_sequences)} new releases for {organism}"
-    thread_header = header_base + "\n" + direct_submission_alert
+    
+    header_parts = []
+    if initial_releases:
+        header_parts.append(f"{len(initial_releases)} initial release(s)")
+    if revisions:
+        header_parts.append(f"{len(revisions)} revision(s)")
+
+    header_base = f"{', '.join(header_parts)} for {organism}"
+    thread_header = header_base + ("\n" + direct_submission_alert if direct_submission_alert else "")
 
     # Minimum and maximum releasedAtTimestamps of new sequences
     min_time = min(seq["releasedAtTimestamp"] for seq in new_sequences)
