@@ -21,6 +21,7 @@ params = {
             "groupId",
             "sampleCollectionDate",
             "releasedAtTimestamp",
+            "isRevocation",
         ]
     ),
 }
@@ -43,9 +44,12 @@ for organism in organisms:
         print(f"No new sequences for {organism}")
         continue
 
-    # Distinguish between initial releases (.1) and revisions
     initial_releases = [seq for seq in new_sequences if seq["accessionVersion"].endswith(".1")]
-    revisions = [seq for seq in new_sequences if not seq["accessionVersion"].endswith(".1")]
+    all_revisions = [seq for seq in new_sequences if not seq["accessionVersion"].endswith(".1")]
+    
+    revocations = [seq for seq in all_revisions if seq.get("isRevocation")]
+    revisions = [seq for seq in all_revisions if not seq.get("isRevocation")]
+
 
     # Check if there are non-groupId=1 sequences and add alert to header
     direct_submission_count = len(
@@ -62,6 +66,8 @@ for organism in organisms:
         header_parts.append(f"{len(initial_releases)} initial release(s)")
     if revisions:
         header_parts.append(f"{len(revisions)} revision(s)")
+    if revocations:
+        header_parts.append(f"{len(revocations)} revocation(s)")
 
     header_base = f"{', '.join(header_parts)} for {organism}"
     thread_header = header_base + ("\n" + direct_submission_alert if direct_submission_alert else "")
