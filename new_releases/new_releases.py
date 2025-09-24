@@ -4,7 +4,7 @@ from time import sleep
 
 import requests
 
-organisms = ["ebola-sudan", "ebola-zaire", "mpox", "west-nile", "cchf", "rsv-a", "rsv-b", "hmpv"]
+organisms = ["ebola-sudan", "ebola-zaire", "mpox", "west-nile", "cchf", "rsv-a", "rsv-b", "hmpv", "measles"]
 slack_webhook_url = os.environ["SLACK_WEBHOOK_URL"]
 
 params = {
