@@ -77,7 +77,7 @@ for organism in organisms:
     max_time = max(seq["releasedAtTimestamp"] for seq in new_sequences)
     filter_url = (
         f"https://pathoplexus.org/{organism}/search?visibility_releasedAtTimestamp=true" +
-        f"&releasedAtTimestampFrom={min_time - 1}&releasedAtTimestampTo={max_time + 1}&isRevocation="
+        f"&releasedAtTimestampFrom={min_time - 1}&releasedAtTimestampTo={max_time + 1}&isRevocation=&versionStatus=&visibility_versionStatus=true&visibility_isRevocation=true"
     )
     message = (
         "Details of up to 10 new sequences (Slack can't handle more):\n"
