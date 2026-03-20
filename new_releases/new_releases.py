@@ -4,7 +4,12 @@ from time import sleep
 
 import requests
 
-organisms = ["ebola-sudan", "ebola-zaire", "mpox", "west-nile", "cchf", "rsv-a", "rsv-b", "hmpv", "measles", "dengue", "yellow-fever"]
+PATHOPLEXUS_URL = "https://pathoplexus.org"
+
+loculus_info = requests.get(f"{PATHOPLEXUS_URL}/loculus-info").json()
+organisms = list(loculus_info["organisms"].keys())
+print(f"Fetched {len(organisms)} organisms from {PATHOPLEXUS_URL}/loculus-info: {organisms}")
+
 slack_webhook_url = os.environ["SLACK_WEBHOOK_URL"]
 
 params = {
@@ -26,8 +31,10 @@ params = {
     ),
 }
 
+lapis_urls = loculus_info["hosts"]["lapis"]
+
 for organism in organisms:
-    base_url = f"https://lapis.pathoplexus.org/{organism}"
+    base_url = lapis_urls[organism]
     url = f"{base_url}/sample/details"
     data = requests.get(url, params=params).json()["data"]
 
@@ -76,7 +83,7 @@ for organism in organisms:
     min_time = min(seq["releasedAtTimestamp"] for seq in new_sequences)
     max_time = max(seq["releasedAtTimestamp"] for seq in new_sequences)
     filter_url = (
-        f"https://pathoplexus.org/{organism}/search?visibility_releasedAtTimestamp=true" +
+        f"{PATHOPLEXUS_URL}/{organism}/search?visibility_releasedAtTimestamp=true" +
         f"&releasedAtTimestampFrom={min_time - 1}&releasedAtTimestampTo={max_time + 1}&isRevocation=&versionStatus=&visibility_versionStatus=true&visibility_isRevocation=true"
     )
     message = (
