@@ -1,0 +1,6 @@
+name: notifications
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - requests
