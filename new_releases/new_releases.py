@@ -79,7 +79,7 @@ for organism in organisms:
     if insdc_revisions:
         header_parts.append(f"{len(insdc_revisions)} INSDC revision(s)")
     if other_revisions:
-        header_parts.append(f"{len(other_revisions)} revision(s)")
+        header_parts.append(f"{len(other_revisions)} direct revision(s)")
     if revocations:
         header_parts.append(f"{len(revocations)} revocation(s)")
 
