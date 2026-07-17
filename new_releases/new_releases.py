@@ -57,6 +57,11 @@ for organism in organisms:
     revocations = [seq for seq in all_revisions if seq.get("isRevocation")]
     revisions = [seq for seq in all_revisions if not seq.get("isRevocation")]
 
+    # groupId == 1 is the INSDC ingest group; anything else is a direct
+    # Pathoplexus submission, so its revisions come from submitters directly.
+    insdc_revisions = [seq for seq in revisions if seq["groupId"] == 1]
+    other_revisions = [seq for seq in revisions if seq["groupId"] != 1]
+
 
     # Check if there are non-groupId=1 sequences and add alert to header
     direct_submission_count = len(
@@ -71,8 +76,10 @@ for organism in organisms:
     header_parts = []
     if initial_releases:
         header_parts.append(f"{len(initial_releases)} initial release(s)")
-    if revisions:
-        header_parts.append(f"{len(revisions)} revision(s)")
+    if insdc_revisions:
+        header_parts.append(f"{len(insdc_revisions)} INSDC revision(s)")
+    if other_revisions:
+        header_parts.append(f"{len(other_revisions)} direct revision(s)")
     if revocations:
         header_parts.append(f"{len(revocations)} revocation(s)")
 
