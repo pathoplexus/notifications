@@ -14,11 +14,11 @@ jobs:
       run:
         working-directory: ./new_releases
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Set up micromamba environment
-        uses: mamba-org/setup-micromamba@v2
+        uses: mamba-org/setup-micromamba@v3
         with:
           environment-file: new_releases/environment.yml
           cache-environment: true
