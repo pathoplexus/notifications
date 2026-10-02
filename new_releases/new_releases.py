@@ -27,6 +27,7 @@ params = {
             "sampleCollectionDate",
             "releasedAtTimestamp",
             "isRevocation",
+            "rawReads",
         ]
     ),
 }
@@ -72,7 +73,14 @@ for organism in organisms:
         if direct_submission_count > 0
         else ""
     )
-    
+
+    raw_reads_count = len([seq for seq in new_sequences if seq.get("rawReads")])
+    raw_reads_alert = (
+        f"⚠️ RawReadsAlert: {raw_reads_count} new sequence(s) with raw reads! 🧬"
+        if raw_reads_count > 0
+        else ""
+    )
+
     header_parts = []
     if initial_releases:
         header_parts.append(f"{len(initial_releases)} initial release(s)")
@@ -84,7 +92,9 @@ for organism in organisms:
         header_parts.append(f"{len(revocations)} revocation(s)")
 
     header_base = f"{', '.join(header_parts)} for {organism}"
-    thread_header = header_base + ("\n" + direct_submission_alert if direct_submission_alert else "")
+    thread_header = "\n".join(
+        part for part in [header_base, direct_submission_alert, raw_reads_alert] if part
+    )
 
     # Minimum and maximum releasedAtTimestamps of new sequences
     min_time = min(seq["releasedAtTimestamp"] for seq in new_sequences)
